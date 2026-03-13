@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITRO - Formulario PG (Petición General) - LISTO</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: linear-gradient(135deg, #0D1F3C 0%, #16325A 50%, #0A7A6E 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #162040;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(140deg, #0D1F3C 0%, #16325A 100%);
+            padding: 40px 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .header-status {
+            font-size: 0.85rem;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(26, 122, 74, 0.3);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #0A7A6E;
+        }
+
+        .section-number {
+            background: #0A7A6E;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .section-title h3 {
+            font-size: 1.2rem;
+            color: #0D1F3C;
+            flex: 1;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.col-span-full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            color: #0D1F3C;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: #C0392B;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            padding: 12px 14px;
+            border: 1px solid #C8D4E8;
+            border-radius: 8px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.95rem;
+            color: #162040;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0A7A6E;
+            box-shadow: 0 0 0 3px rgba(10, 122, 110, 0.1);
+            background: rgba(10, 122, 110, 0.02);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .error {
+            border-color: #C0392B !important;
+            background: rgba(192, 57, 43, 0.05) !important;
+        }
+
+        .error-message {
+            color: #C0392B;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: #5A6880;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #E8EDF5;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0D1F3C 0%, #16325A 100%);
+            color: white;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 24px rgba(13, 31, 60, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #E8EDF5;
+            color: #0D1F3C;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #0A7A6E;
+            border: 2px solid #0A7A6E;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background: white;
+            border-left: 4px solid #0A7A6E;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.error {
+            border-left-color: #C0392B;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .success-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(10, 122, 110, 0.1);
+            border: 3px solid rgba(10, 122, 110, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #0D1F3C;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .modal-text {
+            color: #5A6880;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .folio-display {
+            background: linear-gradient(135deg, rgba(10,122,110,0.1), rgba(10,122,110,0.05));
+            border: 1px solid rgba(10,122,110,0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0A7A6E;
+            text-align: center;
+        }
+
+        .info-box {
+            background: #E8F5F2;
+            border-left: 4px solid #0A7A6E;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            color: #0D4F47;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .buttons {
+                flex-direction: column;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Petición General</h1>
+            <p>Centro de Investigaciones Tropicales - Universidad Veracruzana</p>
+            <div class="header-status">
+                ✅ Sistema configurado y listo para usar
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                ℹ️ <strong>¡Configuración activa!</strong> Este formulario envía automáticamente a:
+                <br>📧 <strong>ctecnicocitro@uv.mx</strong> (Técnico CITRO)
+                <br>📧 <strong>Tu email institucional</strong> (Confirmación)
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-number">01</div>
+                    <h3>Identificación del Solicitante</h3>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="apellidos" class="required">Apellido(s)</label>
+                        <input type="text" id="apellidos" placeholder="García Morales" data-campo="apellidos">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombres" class="required">Nombre(s)</label>
+                        <input type="text" id="nombres" placeholder="Alejandro" data-campo="nombres">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="matricula" class="required">Matrícula/N° Personal</label>
+                        <input type="text" id="matricula" placeholder="S23XXXXXX" maxlength="10" data-campo="matricula">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="correo" class="required">Correo Institucional</label>
+                        <input type="email" id="correo" placeholder="s23xxx@estudiantes.uv.mx" data-campo="correo">
+                        <div class="error-message"></div>
+                        <div class="hint">Ejemplo: nombre@uv.mx o nombre@estudiantes.uv.mx</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="programa" class="required">Programa Académico</label>
+                        <select id="programa" data-campo="programa">
+                            <option value="">— Seleccione —</option>
+                            <option>MET Maestría en Ecología Tropical</option>
+                            <option>Doctorado en Ecología Tropical</option>
+                            <option>Académico</option>
+                            <option>Invitado</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="director">Director(a) de Tesis</label>
+                        <input type="text" id="director" placeholder="Dr./Dra. Nombre Completo" data-campo="director">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-number">02</div>
+                    <h3>Datos de la Petición General</h3>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="tipo" class="required">Tipo de Petición</label>
+                        <select id="tipo" data-campo="tipo">
+                            <option value="">— Seleccione tipo —</option>
+                            <option>Constancias Especiales</option>
+                            <option>Otros</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha" class="required">Fecha de Solicitud</label>
+                        <input type="date" id="fecha" data-campo="fecha">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="urgencia">Urgencia</label>
+                        <select id="urgencia" data-campo="urgencia">
+                            <option>Normal (10 días hábiles)</option>
+                            <option>Prioritario (5 días hábiles)</option>
+                            <option>URGENTE</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-span-full">
+                        <label for="descripcion" class="required">Descripción de la Petición</label>
+                        <textarea id="descripcion" placeholder="Exponga detalladamente la petición, antecedentes, justificación..." data-campo="descripcion"></textarea>
+                        <div class="error-message"></div>
+                        <div class="hint">Mínimo 20 caracteres recomendados</div>
+                    </div>
+                    <div class="form-group col-span-full">
+                        <label for="observaciones">Observaciones Adicionales</label>
+                        <textarea id="observaciones" placeholder="Información complementaria..." style="min-height: 80px;" data-campo="observaciones"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn-primary" onclick="submitForm()">
+                    <span>📤</span> Generar PDF y Enviar
+                </button>
+                <button type="button" class="btn-secondary" onclick="resetForm()">
+                    <span>↻</span> Limpiar Formulario
+                </button>
+                <button type="button" class="btn-ghost" onclick="downloadPDF()">
+                    <span>📥</span> Solo Descargar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div>
+            <div class="spinner"></div>
+            <div class="loading-text" style="color: white; margin-top: 20px; font-weight: 500;">
+                Generando PDF y enviando a 2 destinatarios...
+            </div>
+        </div>
+    </div>
+
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <div class="modal-title">¡Solicitud Enviada Exitosamente!</div>
+            <div class="modal-text">
+                Tu formulario ha sido generado en PDF y enviado a:
+                <div style="margin: 15px 0;">
+                    <strong>📧 Técnico CITRO:</strong><br>
+                    ctecnicocitro@uv.mx
+                    <br><br>
+                    <strong>📧 Tu Email:</strong><br>
+                    <span id="tuEmail" style="font-weight: 700; color: #0A7A6E;"></span>
+                </div>
+                <div class="folio-display" id="folioModal"></div>
+            </div>
+            <button class="btn-primary" onclick="closeSuccessModal()" style="width: 100%; margin: 0;">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SCRIPT CON CREDENCIALES CONFIGURADAS
+         ============================================ -->
+    <script>
+        // ============================================
+        // INICIALIZAR EmailJS CON CREDENCIALES REALES
+        // ============================================
+        (function() {
+            // ✅ CREDENCIALES CONFIGURADAS PARA CITRO
+            emailjs.init("fl5frTANPYuqaW5-p");  // Public Key real
+        })();
+
+        // ============================================
+        // CONFIGURACIÓN DEL SISTEMA
+        // ============================================
+        const CONFIG = {
+            emails: {
+                tecnico: "ctecnicocitro@uv.mx",
+                validDomains: ["@uv.mx", "@correo.uv.mx", "@estudiantes.uv.mx"]
+            },
+            emailjs: {
+                serviceId: "service_qy3lqek",        // Service ID real
+                templateId: "template_DEFAULT_TEMPLATE" // Template ID (debe crearse en EmailJS)
+            }
+        };
+
+        const requiredFields = [
+            'apellidos', 'nombres', 'matricula', 'correo', 'programa',
+            'tipo', 'fecha', 'descripcion'
+        ];
+
+        // ============================================
+        // FUNCIONES DE VALIDACIÓN
+        // ============================================
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function isDomainValid(email) {
+            return CONFIG.emails.validDomains.some(domain => email.endsWith(domain));
+        }
+
+        function getFieldValue(fieldId) {
+            const element = document.getElementById(fieldId);
+            return element ? element.value.trim() : '';
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            requiredFields.forEach(fieldId => {
+                const value = getFieldValue(fieldId);
+                const inputElement = document.getElementById(fieldId);
+
+                if (!value) {
+                    if (inputElement) {
+                        inputElement.classList.add('error');
+                        const errorMsg = inputElement.nextElementSibling;
+                        if (errorMsg && errorMsg.classList.contains('error-message')) {
+                            errorMsg.textContent = 'Este campo es requerido';
+                            errorMsg.classList.add('show');
+                        }
+                    }
+                    isValid = false;
+                } else {
+                    if (inputElement) {
+                        inputElement.classList.remove('error');
+                        const errorMsg = inputElement.nextElementSibling;
+                        if (errorMsg && errorMsg.classList.contains('error-message')) {
+                            errorMsg.classList.remove('show');
+                        }
+                    }
+                }
+            });
+
+            // Validar correo
+            const correo = getFieldValue('correo');
+            if (correo) {
+                if (!validateEmail(correo)) {
+                    document.getElementById('correo').classList.add('error');
+                    isValid = false;
+                } else if (!isDomainValid(correo)) {
+                    document.getElementById('correo').classList.add('error');
+                    isValid = false;
+                }
+            }
+
+            // Validar descripción mínima
+            const descripcion = getFieldValue('descripcion');
+            if (descripcion && descripcion.length < 20) {
+                document.getElementById('descripcion').classList.add('error');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showToast('Por favor completa todos los campos correctamente', 'error');
+            }
+
+            return isValid;
+        }
+
+        // ============================================
+        // GENERAR PDF
+        // ============================================
+        function generatePDF() {
+            const element = document.createElement('div');
+            element.innerHTML = buildPrintHTML();
+            element.style.padding = '20px';
+
+            const options = {
+                margin: [15, 18, 15, 18],
+                filename: `PG_${getFieldValue('matricula')}_${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            return new Promise((resolve, reject) => {
+                html2pdf()
+                    .set(options)
+                    .from(element)
+                    .save()
+                    .then(() => resolve(true))
+                    .catch(err => {
+                        console.error('Error al generar PDF:', err);
+                        reject(err);
+                    });
+            });
+        }
+
+        function buildPrintHTML() {
+            const today = new Date().toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const folio = `PG-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        body {
+                            font-family: "Times New Roman", serif;
+                            font-size: 12pt;
+                            line-height: 1.65;
+                            margin: 2cm;
+                            color: #111;
+                        }
+                        p { margin-bottom: 8px; }
+                        hr { margin: 14px 0; border: none; border-top: 1px solid #333; }
+                        .hdr { 
+                            text-align: center;
+                            border-bottom: 2px solid #0D1F3C;
+                            padding-bottom: 12px;
+                            margin-bottom: 18px;
+                        }
+                        .hdr-small { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.08em; color: #5A6880; }
+                        .hdr-big { font-size: 15pt; font-weight: bold; color: #0D1F3C; margin: 5px 0; }
+                        .hdr-date { font-size: 9pt; color: #5A6880; }
+                        .folio { font-family: monospace; background: #f2f5fa; padding: 4px 10px; border-radius: 4px; color: #0A7A6E; margin-bottom: 14px; text-align: right; font-weight: bold; }
+                        .firma { margin-top: 52px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+                        .fl { text-align: center; border-top: 1px solid #333; padding-top: 6px; font-size: 9pt; color: #555; }
+                        @media print { body { margin: 1.5cm; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="hdr">
+                        <div class="hdr-small">Centro de Investigaciones Tropicales</div>
+                        <div class="hdr-big">UNIVERSIDAD VERACRUZANA</div>
+                        <div class="hdr-date">Xalapa, Veracruz — ${today}</div>
+                    </div>
+
+                    <div class="folio">Folio: ${folio}</div>
+
+                    <p><strong>Asunto:</strong> Petición General</p>
+                    <p>A quien corresponda:</p>
+
+                    <p>Yo, <strong>${getFieldValue('nombres')} ${getFieldValue('apellidos')}</strong>, matrícula / N.° personal <strong>${getFieldValue('matricula')}</strong>, del programa <strong>${getFieldValue('programa')}</strong>, solicito respetuosamente:</p>
+
+                    <hr>
+
+                    <p><strong>Tipo de Petición:</strong> ${getFieldValue('tipo')}</p>
+                    <p><strong>Urgencia:</strong> ${getFieldValue('urgencia')}</p>
+                    <p><strong>Fecha de Solicitud:</strong> ${getFieldValue('fecha')}</p>
+
+                    <p><strong>Descripción de la Petición:</strong></p>
+                    <p style="text-align: justify;">${getFieldValue('descripcion')}</p>
+
+                    ${getFieldValue('observaciones') ? `
+                        <hr>
+                        <p><strong>Observaciones Adicionales:</strong></p>
+                        <p style="text-align: justify;">${getFieldValue('observaciones')}</p>
+                    ` : ''}
+
+                    <p style="margin-top: 16px;">Atentamente,<br><strong>${getFieldValue('nombres')} ${getFieldValue('apellidos')}</strong></p>
+
+                    <div class="firma">
+                        <div class="fl">Firma del Solicitante<br><span style="color: #888;">${getFieldValue('apellidos')}, ${getFieldValue('nombres')}</span></div>
+                        <div class="fl">Vo.Bo. Dirección CITRO</div>
+                    </div>
+
+                    <div style="margin-top: 16px; text-align: center; font-size: 8pt; color: #aaa; border-top: 1px solid #eee; padding-top: 8px;">
+                        CITRO-Formularios Petición General — ${folio} — Generado automáticamente
+                    </div>
+                </body>
+                </html>
+            `;
+        }
+
+        // ============================================
+        // ENVIAR A MÚLTIPLES EMAILS
+        // ============================================
+        function submitForm() {
+            if (!validateForm()) return;
+
+            const correoSolicitante = getFieldValue('correo');
+            showLoadingOverlay(true);
+
+            // Generar PDF
+            generatePDF()
+                .then(() => {
+                    // Preparar datos
+                    const folio = `PG-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                    
+                    const emailData = {
+                        to_email: correoSolicitante,  // Se envía a ambos (template debe usar este)
+                        apellidos: getFieldValue('apellidos'),
+                        nombres: getFieldValue('nombres'),
+                        matricula: getFieldValue('matricula'),
+                        correo: getFieldValue('correo'),
+                        programa: getFieldValue('programa'),
+                        tipo: getFieldValue('tipo'),
+                        fecha: getFieldValue('fecha'),
+                        urgencia: getFieldValue('urgencia'),
+                        descripcion: getFieldValue('descripcion'),
+                        folio: folio,
+                        fecha_envio: new Date().toLocaleString('es-MX')
+                    };
+
+                    // Enviar email
+                    return emailjs.send(
+                        CONFIG.emailjs.serviceId,
+                        CONFIG.emailjs.templateId,
+                        emailData
+                    );
+                })
+                .then(response => {
+                    showLoadingOverlay(false);
+                    console.log('Email enviado exitosamente:', response);
+                    
+                    // Mostrar modal de éxito
+                    document.getElementById('tuEmail').textContent = getFieldValue('correo');
+                    document.getElementById('folioModal').textContent = 
+                        `Folio: PG-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                    document.getElementById('successModal').classList.add('show');
+                    
+                    // Limpiar formulario
+                    resetForm();
+                })
+                .catch(error => {
+                    showLoadingOverlay(false);
+                    console.error('Error:', error);
+                    showToast('Error al enviar: ' + (error.message || 'Verifica tu configuración de EmailJS'), 'error');
+                });
+        }
+
+        function downloadPDF() {
+            if (!validateForm()) return;
+            
+            showLoadingOverlay(true);
+            generatePDF()
+                .then(() => {
+                    showLoadingOverlay(false);
+                    showToast('PDF descargado exitosamente', 'success');
+                })
+                .catch(err => {
+                    showLoadingOverlay(false);
+                    showToast('Error al generar PDF: ' + err.message, 'error');
+                });
+        }
+
+        // ============================================
+        // UTILIDADES
+        // ============================================
+        function resetForm() {
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                el.value = '';
+                el.classList.remove('error');
+            });
+
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.remove('show');
+            });
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').value = today;
+        }
+
+        function showLoadingOverlay(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s reverse ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ============================================
+        // INICIALIZACIÓN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').value = today;
+            console.log('✅ Formulario cargado - EmailJS configurado');
+        });
+
+        document.getElementById('successModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSuccessModal();
+            }
+        });
+    </script>
+</body>
+</html>

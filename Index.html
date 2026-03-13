@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITRO - Portal de Trámites</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: #f4f7f6;
+            color: #122540;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-container h1 {
+            font-size: 2.5rem;
+            color: #113A70;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header-container p {
+            font-size: 1.1rem;
+            color: #556b8d;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-top: 6px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Colores por trámite */
+        .card.pg { border-top-color: #0A7A6E; } /* Verde azulado */
+        .card.sc { border-top-color: #2D9B5F; } /* Verde */
+        .card.oe { border-top-color: #18529D; } /* Azul */
+        .card.gp { border-top-color: #C0392B; } /* Carmesí */
+        .card.av { border-top-color: #113A70; } /* Azul oscuro */
+        .card.vb { border-top-color: #900C3F; } /* Carmesí oscuro */
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #667;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            margin-top: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card.pg .card-footer { color: #0A7A6E; }
+        .card.sc .card-footer { color: #2D9B5F; }
+        .card.oe .card-footer { color: #18529D; }
+        .card.gp .card-footer { color: #C0392B; }
+        .card.av .card-footer { color: #113A70; }
+        .card.vb .card-footer { color: #900C3F; }
+
+        @media (max-width: 768px) {
+            .header-container h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>CITRO Portal</h1>
+        <p>Sistema Centralizado de Trámites y Solicitudes</p>
+    </div>
+
+    <div class="grid-container">
+        <a href="FORMULARIO_PG_CONFIGURADO_LISTO.html" class="card pg">
+            <div class="card-icon">📝</div>
+            <div class="card-title">Petición General (PG)</div>
+            <div class="card-desc">Solicitud de constancias, justificantes y otros trámites administrativos generales.</div>
+            <div class="card-footer">Ir al formulario →</div>
+        </a>
+
+        <a href="FORMULARIO_SC_Salida_Campo.html" class="card sc">
+            <div class="card-icon">🌿</div>
+            <div class="card-title">Salida de Campo (SC)</div>
+            <div class="card-desc">Solicitud de viáticos, transporte y apoyo logístico para salidas a prácticas de campo.</div>
+            <div class="card-footer">Ir al formulario →</div>
+        </a>
+
+        <a href="FORMULARIO_OE_Organizacion_Evento.html" class="card oe">
+            <div class="card-icon">📅</div>
+            <div class="card-title">Organización de Eventos (OE)</div>
+            <div class="card-desc">Registro y solicitud de apoyo para congresos, foros, talleres o simposios.</div>
+            <div class="card-footer">Ir al formulario →</div>
+        </a>
+
+        <a href="FORMULARIO_AV_Aval_Academico.html" class="card av">
+            <div class="card-icon">🎓</div>
+            <div class="card-title">Aval Académico (AV)</div>
+            <div class="card-desc">Validación institucional para proyectos, participaciones o estancias académicas.</div>
+            <div class="card-footer">Ir al formulario →</div>
+        </a>
+
+        <a href="FORMULARIO_VB_Visto_Bueno_Cursos.html" class="card vb">
+            <div class="card-icon">✅</div>
+            <div class="card-title">Visto Bueno Cursos (VB)</div>
+            <div class="card-desc">Aprobación para impartir o tomar cursos externos con valor curricular.</div>
+            <div class="card-footer">Ir al formulario →</div>
+        </a>
+
+        <a href="FORMULARIO_GP_Gastos_Publicacion.html" class="card gp">
+            <div class="card-icon">📄</div>
+            <div class="card-title">Gastos de Publicación (GP)</div>
+            <div class="card-desc">Solicitud de apoyo financiero para publicación de artículos científicos o libros.</div>
+            <div class="card-footer">Ir al formulario →</div>
+        </a>
+    </div>
+
+</body>
+</html>

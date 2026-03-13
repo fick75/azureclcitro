@@ -1,0 +1,168 @@
+<!-- ========================================
+     FORMULARIO GP - GASTOS DE PUBLICACIÓN
+     ======================================== -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITRO - Formulario GP (Gastos de Publicación)</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'IBM Plex Sans',sans-serif;background:linear-gradient(135deg,#900C3F 0%,#C0392B 100%);min-height:100vh;padding:20px;color:#162040}
+        .container{max-width:900px;margin:0 auto;background:white;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+        .header{background:linear-gradient(140deg,#900C3F 0%,#C0392B 100%);padding:40px 30px;color:white;text-align:center}
+        .header h1{font-size:2rem;margin-bottom:10px;font-weight:700}
+        .header p{font-size:0.95rem;opacity:0.9}
+        .header-logo{display:inline-block;width:60px;height:60px;background:rgba(255,192,203,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:15px}
+        .content{padding:40px}
+        .form-section{margin-bottom:30px}
+        .section-title{display:flex;align-items:center;gap:15px;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #900C3F}
+        .section-number{background:#900C3F;color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+        .section-title h3{font-size:1.2rem;color:#0D1F3C;flex:1}
+        .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+        .form-group.col-span-full{grid-column:1/-1}
+        label{font-weight:600;color:#0D1F3C;margin-bottom:8px;font-size:0.95rem}
+        .required::after{content:" *";color:#C0392B}
+        input,select,textarea{padding:12px 14px;border:1px solid #C8D4E8;border-radius:8px;font-family:'IBM Plex Sans',sans-serif;font-size:0.95rem;color:#162040;width:100%;transition:all 0.3s}
+        input:focus,select:focus,textarea:focus{outline:none;border-color:#900C3F;box-shadow:0 0 0 3px rgba(144,12,63,0.1)}
+        .error{border-color:#C0392B !important}
+        .error-message{color:#C0392B;font-size:0.75rem;margin-top:4px;display:none}
+        .error-message.show{display:block}
+        .alert{background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);border-radius:8px;padding:12px 14px;color:#C0392B;font-size:0.85rem;margin:12px 0}
+        .buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:30px;border-top:2px solid #E8EDF5}
+        button{padding:12px 24px;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.95rem;transition:all 0.3s;display:flex;align-items:center;gap:8px}
+        .btn-primary{background:linear-gradient(135deg,#900C3F 0%,#C0392B 100%);color:white;flex:1;min-width:200px}
+        .btn-primary:hover{box-shadow:0 8px 24px rgba(144,12,63,0.3);transform:translateY(-2px)}
+        .btn-secondary{background:#E8EDF5;color:#0D1F3C}
+        .btn-ghost{background:transparent;color:#900C3F;border:2px solid #900C3F}
+        .config-section{background:#F2F5FA;border-radius:12px;padding:20px;margin-bottom:20px}
+        .toast{position:fixed;bottom:20px;right:20px;padding:16px 24px;background:white;border-left:4px solid #900C3F;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:9999}
+        .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:10000}
+        .loading-overlay.show{display:flex}
+        .spinner{width:50px;height:50px;border:4px solid rgba(255,255,255,0.2);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .success-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000}
+        .success-modal.show{display:flex}
+        .modal-content{background:white;border-radius:16px;padding:40px;text-align:center;max-width:500px}
+        @media(max-width:768px){.form-grid{grid-template-columns:1fr}.buttons{flex-direction:column}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-logo">📄</div>
+            <h1>Gastos de Publicación</h1>
+            <p>Centro de Investigaciones Tropicales - Universidad Veracruzana</p>
+        </div>
+
+        <div class="content">
+            <div class="config-section">
+                <strong>⚙️ Configuración de Envío</strong>
+                <div class="form-grid" style="margin-top:15px">
+                    <div class="form-group"><label for="recipientEmail" class="required">Correo Destino</label><input type="email" id="recipientEmail" placeholder="ejemplo@uv.mx"></div>
+                    <div class="form-group"><label for="senderEmail" class="required">Tu Correo</label><input type="email" id="senderEmail" placeholder="tu@uv.mx"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title"><div class="section-number">01</div><h3>Identificación del Solicitante</h3></div>
+                <div class="form-grid">
+                    <div class="form-group"><label for="apellidos" class="required">Apellidos</label><input type="text" id="apellidos" placeholder="García Morales"></div>
+                    <div class="form-group"><label for="nombres" class="required">Nombres</label><input type="text" id="nombres" placeholder="Alejandro"></div>
+                    <div class="form-group"><label for="matricula" class="required">Matrícula</label><input type="text" id="matricula" placeholder="S23XXXXXX"></div>
+                    <div class="form-group"><label for="correo" class="required">Correo Institucional</label><input type="email" id="correo" placeholder="s23xxx@uv.mx"></div>
+                    <div class="form-group col-span-full"><label for="programa">Programa Académico</label><select id="programa"><option>MET Maestría en Ecología Tropical</option><option>Doctorado en Ecología Tropical</option><option>Académico</option></select></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title"><div class="section-number">02</div><h3>Datos de la Publicación</h3></div>
+                <div class="form-grid">
+                    <div class="form-group col-span-full"><label for="articulo" class="required">Título del Artículo</label><input type="text" id="articulo" placeholder="Título completo del manuscrito"></div>
+                    <div class="form-group"><label for="revista" class="required">Nombre de la Revista</label><input type="text" id="revista" placeholder="Journal of Tropical Ecology"></div>
+                    <div class="form-group"><label for="monto" class="required">Monto a Cubrir (MXN)</label><input type="number" id="monto" placeholder="0.00" min="0" step="0.01"></div>
+                    <div class="form-group"><label for="fechaLimite" class="required">Fecha Límite de Pago</label><input type="date" id="fechaLimite"></div>
+                    <div class="form-group col-span-full"><label for="pruebas" class="required">Estado de Pruebas de Galera</label><select id="pruebas"><option value="">— Seleccione —</option><option>Aprobadas y listas para adjuntar</option><option>En revisión por autores</option><option>Pendientes de recibir</option></select><div class="error-message"></div></div>
+                </div>
+                <div class="alert">⚠️ <strong>IMPORTANTE:</strong> Debes adjuntar el PDF de las pruebas de galera aprobadas para poder enviar este formulario.</div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title"><div class="section-number">03</div><h3>Documentos Adjuntos (Requerido)</h3></div>
+                <div style="background:#f9f9f9;padding:20px;border-radius:8px;border:2px dashed #900C3F">
+                    <p style="font-weight:600;color:#900C3F;margin-bottom:10px">📎 Pruebas de Galera (PDF)</p>
+                    <input type="file" id="galeras" accept=".pdf" style="padding:10px;border:1px solid #C8D4E8;border-radius:8px;width:100%">
+                    <p style="font-size:0.8rem;color:#5A6880;margin-top:8px">Carga el PDF de las pruebas de galera aprobadas</p>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn-primary" onclick="submitForm()">📤 Enviar</button>
+                <button type="button" class="btn-secondary" onclick="resetForm()">↻ Limpiar</button>
+                <button type="button" class="btn-ghost" onclick="downloadPDF()">📥 PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay"><div><div class="spinner"></div><div style="color:white;margin-top:20px;font-weight:500">Procesando...</div></div></div>
+    <div class="success-modal" id="successModal"><div class="modal-content"><div style="font-size:3rem;margin-bottom:20px">✅</div><div style="font-size:1.5rem;color:#0D1F3C;margin-bottom:10px;font-weight:700">¡Enviado!</div><div style="color:#5A6880;margin-bottom:20px">Se envió a: <strong id="sentEmail"></strong></div><button class="btn-primary" onclick="closeModal()" style="width:100%;margin:0">Aceptar</button></div></div>
+
+    <script>
+        emailjs.init("fl5frTANPYuqaW5-p");
+        const required=['recipientEmail','senderEmail','apellidos','nombres','matricula','correo','articulo','revista','monto','fechaLimite','pruebas'];
+        function getVal(id){return document.getElementById(id).value.trim()}
+        function validateEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
+        function validate(){
+            let ok=true;
+            required.forEach(id=>{const el=document.getElementById(id);const val=getVal(id);if(!val){el.classList.add('error');ok=false}else{el.classList.remove('error')}});
+            if(document.getElementById('galeras').files.length===0){showToast('⚠️ Debes adjuntar el PDF de las pruebas de galera','error');return false}
+            if(!validateEmail(getVal('recipientEmail'))||!validateEmail(getVal('senderEmail'))){showToast('Correos inválidos','error');return false}
+            if(!ok)showToast('Completa todos los campos','error');
+            return ok;
+        }
+        function generatePDF(){const element=document.createElement('div');element.innerHTML=`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:"Times New Roman",serif;font-size:12pt;line-height:1.6;margin:2cm;color:#111}p{margin-bottom:8px}h4{margin-top:16px;margin-bottom:8px;color:#900C3F}</style></head><body><div style="text-align:center;border-bottom:2px solid #900C3F;padding-bottom:12px;margin-bottom:18px"><div style="font-size:9pt;color:#666">Centro de Investigaciones Tropicales</div><div style="font-size:15pt;font-weight:bold;color:#900C3F">UNIVERSIDAD VERACRUZANA</div></div><p>A quien corresponda:</p><p>Yo, <strong>${getVal('nombres')} ${getVal('apellidos')}</strong>, matrícula <strong>${getVal('matricula')}</strong>, solicito apoyo económico para la siguiente publicación:</p><p><strong>Artículo:</strong> ${getVal('articulo')}<br><strong>Revista:</strong> ${getVal('revista')}<br><strong>Monto a cubrir:</strong> $${getVal('monto')}<br><strong>Fecha límite:</strong> ${getVal('fechaLimite')}<br><strong>Estado pruebas:</strong> ${getVal('pruebas')}</p><p style="margin-top:30px">Atentamente,<br><strong>${getVal('nombres')} ${getVal('apellidos')}</strong></p></body></html>`;const opts={margin:[15,18,15,18],filename:`GP_${getVal('matricula')}_${new Date().toISOString().split('T')[0]}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4'}};return new Promise((res,rej)=>{html2pdf().set(opts).from(element).save().then(()=>res()).catch(rej)})}
+        function submitForm(){if(!validate())return;showLoading(true);generatePDF().then(()=>{const data={to_email:getVal('recipientEmail'),from_email:getVal('senderEmail'),apellidos:getVal('apellidos'),nombres:getVal('nombres'),articulo:getVal('articulo')};return emailjs.send('service_qy3lqek', 'template_pg_citro',data)}).then(()=>{showLoading(false);document.getElementById('sentEmail').textContent=getVal('recipientEmail');document.getElementById('successModal').classList.add('show');resetForm()}).catch(err=>{showLoading(false);showToast('Error: '+err.message,'error')})}
+        function downloadPDF(){if(!validate())return;showLoading(true);generatePDF().then(()=>{showLoading(false);showToast('PDF descargado','success')}).catch(err=>{showLoading(false);showToast('Error','error')})}
+        function resetForm(){document.querySelectorAll('input,select,textarea').forEach(el=>{if(!el.id.includes('recipient')&&!el.id.includes('sender'))el.value=''});document.querySelectorAll('.error').forEach(el=>el.classList.remove('error'))}
+        function showLoading(s){document.getElementById('loadingOverlay').classList.toggle('show',s)}
+        function closeModal(){document.getElementById('successModal').classList.remove('show')}
+        function showToast(msg,type='info'){const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),4000)}
+        document.addEventListener('DOMContentLoaded',()=>{document.getElementById('fechaLimite').valueAsDate=new Date()})
+    </script>
+</body>
+</html>
+
+
+<!-- ========================================
+     FORMULARIO AV - AVAL ACADÉMICO
+     ======================================== -->
+<!-- COPIAR DESDE FORMULARIO_OE_Organizacion_Evento.html Y ADAPTAR CAMPOS:
+     - Cambiar titulo a "Aval / Validación Académica"
+     - Color: #18529D (Azul)
+     - Agregar campos: tipo_actividad, nombre_evento, sede, lugar, modalidad, participacion
+     - Agregar campo dinámico para "Otra actividad"
+     - Agregar justificacion (textarea largo)
+     - Agregar lgac
+     - Agregar presenta_trabajo (select)
+-->
+
+
+<!-- ========================================
+     FORMULARIO VB - VISTO BUENO CURSOS  
+     ======================================== -->
+<!-- COPIAR DESDE FORMULARIO_OE_Organizacion_Evento.html Y ADAPTAR CAMPOS:
+     - Cambiar titulo a "Visto Bueno para Cursos Externos"
+     - Color: #900C3F (Carmesí oscuro)
+     - Agregar campos: nombre_curso, institucion, lugar_curso, modalidad, idioma
+     - Agregar fechas (inicio/fin)
+     - Agregar duracion, costo
+     - Agregar apoyo_economico (select)
+     - Agregar justificacion
+     - Agregar certificado
+     - Agregar difusion
+     - ⚠️ REQUERIDO: Programa del curso (archivo)
+-->
